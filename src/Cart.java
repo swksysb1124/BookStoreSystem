@@ -2,13 +2,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Cart {
+	/** container (instance variable) : use a map to implement shopping cart 
+	 *  users can use the product ID to access the item they add into the cart.
+	 */
 	private Map<String,Item> container = new HashMap<String,Item>();
 	public Cart(){
 		// default constructor
 	}
+	// check if this item put into the cart by its product ID
 	public boolean inCart(String pid){
 		return container.containsKey(pid);
 	}
+	// add items into the cart
 	public void add(ItemInStock item){
 		add(item.getProductId(),item.getName(),item.getPrice(), 0);
 	}
@@ -21,7 +26,8 @@ public class Cart {
 			container.put(pid, item);
 		}	
 	}
-	public void incearse(String pid, int amount){
+	// increase the number of items in cart
+	public void increase(String pid, int amount){
 		Item item = null;
 		if(container.containsKey(pid)){ // ensure item is already in cart
 			item = container.get(pid);
@@ -30,6 +36,7 @@ public class Cart {
 			print("You probably type the wrong pid!");
 		}	
 	}
+	// decrease the number of items in cart
 	public void decrease(String pid, int amount){
 		Item item = null;
 		if(container.containsKey(pid)){ // ensure item is already in cart
@@ -43,14 +50,17 @@ public class Cart {
 			print("You probably type the wrong pid!");
 		}	
 	}
+	// print the string in console (for test)
 	private void print(String str){
 		System.out.println(str);
 	}
+	// list all items in cart
 	public void list(){
 		for(Item e: container.values()){
 			System.out.println(e);
 		}
 	}
+	// calculate the charge of items in cart
 	public double charge(){
 		double sum = 0;
 		for(Item e: container.values()){
@@ -58,6 +68,7 @@ public class Cart {
 		}
 		return sum;
 	}
+	// clear the cart
 	public void clear(){
 		container.clear();
 	}
