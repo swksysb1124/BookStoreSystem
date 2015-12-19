@@ -1,7 +1,3 @@
 # BookStoreSystem
 
-• Designed user interfaces for system manager and clients.
-• Implemented a Client class for shopping online
-• Implemented a Cart class for collecting items
-• Implemented a Manager class for updating, adding, deleting, checking information of products.
-• Implemented a login mechanism to avoid from non-authorized manipulation
+This project implemented a book store system written by Java Swing. For customers, Client and Cart classes were implemented for shopping and collecting items. For managers,  Manager and Stock classes were inplemented for updating, adding, deleting, checking information of products. In addition, a login mechanism is established to avoid from non-authorized manipulation.
