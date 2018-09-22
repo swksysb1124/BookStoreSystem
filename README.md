@@ -2,7 +2,7 @@
 
 ### Purpose
 
-This project implemented a book store system written by **Java Swing**. This is a side project for practice how to use `JFrame`, `JButton`, `JPanel`, `JTextField`, `JTextArea` & `JRadioButton` to implement a GUI program.
+This project implemented a book store system written by **Java Swing**. This is a side project to practice how to use `JFrame`, `JButton`, `JPanel`, `JTextField`, `JTextArea` & `JRadioButton` to implement a GUI program.
 
 ### Application architecture
 
