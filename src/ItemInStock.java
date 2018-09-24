@@ -1,4 +1,4 @@
-public class ItemInStock extends Item{
+public class ItemInStock extends Item {
 	private String information;
 	public ItemInStock(String pid, String name, double price, int amount, String information){
 		super(pid,name,price,amount);
