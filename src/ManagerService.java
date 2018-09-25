@@ -4,118 +4,189 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-public class ManagerService extends JFrame implements ActionListener{
+public class ManagerService 
+	extends JFrame implements ActionListener{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static final int ACTION_LOGIN_PROCESS = 0;
+	private static final int ACTION_ADD = 1;
+	private static final int ACTION_UPDATE = 2;
+	private static final int ACTION_DELETE = 3;
+	private static final int ACTION_EXIT = 4;
+	
 	private Stock stock;
-	private String userName = "manager"; // 定义管理员的用户名和密码
-	private String password = "0000";
+	private static final String defaultManagerName = "manager"; // 定义管理员的用户名和密码
+	private static final String defaultManagerPassword = "0000";
 	
-	private String user, pwd, pid, pname, information;
-	private double price;
-	private int amount,count=0;
+	private String mManagerName;
+	private String mManagerPassword;
+	private String mPid;
+	private String mPname;
+	private String mInformation;
 	
-	private int selection;
+	private double mPrice;
 	
-	private JLabel jluser, jlpwd, jlpid, jlpname, jlprice, jlamount, jlinformation, jlstate;
-	private JTextField jtfuser,jtfpwd, jtfpid,jtfpname, jtfprice, jtfamount, jtfinformation;
-	private JTextArea display;
-	private JRadioButton jrbAdd, jrbUpdate, jrbDelete, jrbShow, jrbExit;
-	private ButtonGroup bg;
-	private JButton jbSubmit;
-	private JPanel NorthPanel, CenterPanel, OperationPanel, SouthPanel;
+	private int mAmount;
+	private int mLoginCount = 0;
+	
+	private int mSelectedAction;
+	
+	private JLabel jlManagerName;
+	private JLabel jlManagerPassword;
+	private JLabel jlPid;
+	private JLabel jlPname;
+	private JLabel jlPrice;
+	private JLabel jlAmount;
+	private JLabel jlInformation; 
+	private JLabel jlState;
+	
+	private JTextField jtfUser;
+    private JTextField jtfPwd; 
+	private JTextField jtfPid;
+	private JTextField jtfPname;
+	private JTextField jtfPrice; 
+	private JTextField jtfAmount; 
+	private JTextField jtfInformation;
+	
+	private JTextArea jtaDisplay;
+	
+	private ButtonGroup btnGrp;
+	private JRadioButton jrbtnAdd; 
+	private JRadioButton jrbtnUpdate;
+	private JRadioButton jrbtnDelete;
+	private JRadioButton jrbtnShow;
+	private JRadioButton jrbtnExit;
+	
+	private JButton jbtnSubmit;
+	
+	private JPanel jpNorth;
+	private JPanel jpCenter;
+	private JPanel jpEast;
+	private JPanel jpSouth;
 	
 	public ManagerService() {
 		super("Manager Service");
-		// TODO Auto-generated constructor stub
 		initializing();
+		
 		// Define Label
-		jluser = new JLabel("Manager : ");
-		jlpwd = new JLabel("Password : ");
-		jlpid = new JLabel("PID : "); 
-		jlpname = new JLabel("Name : ");
-		jlprice = new JLabel("Price : ");
-		jlamount = new JLabel("Amount : ");
-		jlinformation = new JLabel("Information : ");
-		jlstate = new JLabel("Only manager access!");
+		jlManagerName = new JLabel("Manager : ");
+		jlManagerPassword = new JLabel("Password : ");
+		jlPid = new JLabel("PID : "); 
+		jlPname = new JLabel("Name : ");
+		jlPrice = new JLabel("Price : ");
+		jlAmount = new JLabel("Amount : ");
+		jlInformation = new JLabel("Information : ");
+		jlState = new JLabel("Only manager access!");
+		
 		// Define TextField
-		jtfuser = new JTextField(8);
-		jtfpwd = new JTextField(8); 
-		jtfpid = new JTextField(5); jtfpid.setEnabled(false);
-		jtfpname = new JTextField(5); jtfpname.setEnabled(false);
-		jtfprice = new JTextField(5); jtfprice.setEnabled(false);
-		jtfamount = new JTextField(5); jtfamount.setEnabled(false);
-		jtfinformation = new JTextField(5); jtfinformation.setEnabled(false);
+		jtfUser = new JTextField(8);
+		jtfPwd = new JTextField(8); 
+		jtfPid = new JTextField(5); jtfPid.setEnabled(false);
+		jtfPname = new JTextField(5); jtfPname.setEnabled(false);
+		jtfPrice = new JTextField(5); jtfPrice.setEnabled(false);
+		jtfAmount = new JTextField(5); jtfAmount.setEnabled(false);
+		jtfInformation = new JTextField(5); jtfInformation.setEnabled(false);
 		
 		// Define TextArea
-		display = new JTextArea(15,49);
-		// Define RadioButton
-		jrbAdd = new JRadioButton("Add"); jrbAdd.setEnabled(false);
-		jrbUpdate = new JRadioButton("Update"); jrbUpdate.setEnabled(false);
-		jrbDelete = new JRadioButton("Delete"); jrbDelete.setEnabled(false);
-		jrbShow = new JRadioButton("Show"); jrbShow.setEnabled(false);
-		jrbExit = new JRadioButton("Exit"); jrbExit.setEnabled(false);
-		bg = new ButtonGroup();
-		bg.add(jrbAdd);bg.add(jrbUpdate);bg.add(jrbDelete);bg.add(jrbShow);bg.add(jrbExit);
-		// Define Button
-		jbSubmit = new JButton("Submit");
-		// JPanel
-		NorthPanel = new JPanel();
-		OperationPanel = new JPanel(); 
-		OperationPanel.setLayout(new BoxLayout(OperationPanel, BoxLayout.Y_AXIS));
-		OperationPanel.setBorder(new EmptyBorder(new Insets(5, 5, 5, 15)));
-		CenterPanel = new JPanel();
-		CenterPanel.setBorder(new EmptyBorder(new Insets(5, 15, 5, 5)));
-		SouthPanel = new JPanel();
-		//Listener Setting
-		jrbAdd.addActionListener(this); 
-		jrbUpdate.addActionListener(this); 
-		jrbDelete.addActionListener(this);
-		jrbShow.addActionListener(this);
-		jrbExit.addActionListener(this);
-		jbSubmit.addActionListener(this);
-		//Panel Configuration
-		//NORTH
-		NorthPanel.add(jluser);
-		NorthPanel.add(jtfuser);
-		NorthPanel.add(jlpwd);
-		NorthPanel.add(jtfpwd);
-		NorthPanel.add(jrbAdd);
-		NorthPanel.add(jrbUpdate);
-		NorthPanel.add(jrbDelete);
-		NorthPanel.add(jrbShow);
-		NorthPanel.add(jrbExit);
-		getContentPane().add(BorderLayout.NORTH, NorthPanel);
+		jtaDisplay = new JTextArea(15,49);
 		
-		//EAST
+		// Define RadioButton
+		jrbtnAdd = new JRadioButton("Add"); jrbtnAdd.setEnabled(false);
+		jrbtnUpdate = new JRadioButton("Update"); jrbtnUpdate.setEnabled(false);
+		jrbtnDelete = new JRadioButton("Delete"); jrbtnDelete.setEnabled(false);
+		jrbtnShow = new JRadioButton("Show"); jrbtnShow.setEnabled(false);
+		jrbtnExit = new JRadioButton("Exit"); jrbtnExit.setEnabled(false);
+		
+		btnGrp = new ButtonGroup();
+		btnGrp.add(jrbtnAdd);
+		btnGrp.add(jrbtnUpdate);
+		btnGrp.add(jrbtnDelete);
+		btnGrp.add(jrbtnShow);
+		btnGrp.add(jrbtnExit);
+		
+		// Define Button
+		jbtnSubmit = new JButton("Submit");
+		
+		
+		
+		// Listener Setting
+		jrbtnAdd.addActionListener(this); 
+		jrbtnUpdate.addActionListener(this); 
+		jrbtnDelete.addActionListener(this);
+		jrbtnShow.addActionListener(this);
+		jrbtnExit.addActionListener(this);
+		jbtnSubmit.addActionListener(this);
+		
+		// JPanel
+		
+		// North
+		jpNorth = new JPanel();
+				
+		// East
+		jpEast = new JPanel(); 
+		jpEast.setLayout(new BoxLayout(jpEast, BoxLayout.Y_AXIS)); // 設定配置方向為 Y-軸
+		jpEast.setBorder(new EmptyBorder(new Insets(5, 5, 5, 15)));
+				
+		// Center
+		jpCenter = new JPanel();
+		jpCenter.setBorder(new EmptyBorder(new Insets(5, 15, 5, 5)));
+				
+		// South
+		jpSouth = new JPanel();
+		
+		// Panel Configuration
+		
+		// NORTH
+		jpNorth.add(jlManagerName);
+		jpNorth.add(jtfUser);
+		
+		jpNorth.add(jlManagerPassword);
+		jpNorth.add(jtfPwd);
+		
+		jpNorth.add(jrbtnAdd);
+		jpNorth.add(jrbtnUpdate);
+		jpNorth.add(jrbtnDelete);
+		jpNorth.add(jrbtnShow);
+		jpNorth.add(jrbtnExit);
+		getContentPane().add(BorderLayout.NORTH, jpNorth);
+		
+		// EAST
 		JPanel SelectPanel = new JPanel();
 		SelectPanel.setLayout(new BoxLayout(SelectPanel, BoxLayout.Y_AXIS));
-		SelectPanel.add(jlpid);		SelectPanel.add(jtfpid);
-		SelectPanel.add(jlpname);		SelectPanel.add(jtfpname);
-		SelectPanel.add(jlprice);		SelectPanel.add(jtfprice);
-		SelectPanel.add(jlamount);		SelectPanel.add(jtfamount);
-		SelectPanel.add(jlinformation);		SelectPanel.add(jtfinformation);
-		JPanel SubmitPanel = new JPanel();
-		SubmitPanel.add(jbSubmit);
-		OperationPanel.add(SelectPanel);
-		OperationPanel.add(SubmitPanel);
-		getContentPane().add(BorderLayout.EAST, OperationPanel);
+		SelectPanel.add(jlPid);		
+		SelectPanel.add(jtfPid);
+		SelectPanel.add(jlPname);		
+		SelectPanel.add(jtfPname);
+		SelectPanel.add(jlPrice);		
+		SelectPanel.add(jtfPrice);
+		SelectPanel.add(jlAmount);		
+		SelectPanel.add(jtfAmount);
+		SelectPanel.add(jlInformation);		
+		SelectPanel.add(jtfInformation);
 		
-		//CENTER
-		display.setLineWrap(true);  //當行的長度大於所分派的寬度時，將換行       
-		display.setWrapStyleWord(true); //當行的長度大於所分派的寬度時，將在單詞邊界（空白）處換行
-		display.setEditable(false); //不可編輯的 
-		JScrollPane qScroller = new JScrollPane(display);
+		JPanel SubmitPanel = new JPanel();
+		SubmitPanel.add(jbtnSubmit);
+		
+		jpEast.add(SelectPanel);
+		jpEast.add(SubmitPanel);
+		getContentPane().add(BorderLayout.EAST, jpEast);
+		
+		// CENTER
+		jtaDisplay.setLineWrap(true);  //當行的長度大於所分派的寬度時，將換行       
+		jtaDisplay.setWrapStyleWord(true); //當行的長度大於所分派的寬度時，將在單詞邊界（空白）處換行
+		jtaDisplay.setEditable(false); //不可編輯的 
+		JScrollPane qScroller = new JScrollPane(jtaDisplay);
 		qScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); 
 		qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		CenterPanel.add(qScroller);
-		getContentPane().add(BorderLayout.CENTER, CenterPanel);
+		jpCenter.add(qScroller);
+		getContentPane().add(BorderLayout.CENTER, jpCenter);
 		
-		//SOUTH
-		SouthPanel.add(jlstate);
-		getContentPane().add(BorderLayout.SOUTH, SouthPanel);
+		// SOUTH
+		jpSouth.add(jlState);
+		getContentPane().add(BorderLayout.SOUTH, jpSouth);
 		
 		setSize(750,390);
 		setResizable(false);
@@ -130,7 +201,7 @@ public class ManagerService extends JFrame implements ActionListener{
 		stock.add("2187", "Python", 79.5, 80, "Pretty excel!");
 	}
 	public void login(){
-		display.setText("Please enter username and password:");
+		jtaDisplay.setText("Please enter username and password:");
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -142,177 +213,186 @@ public class ManagerService extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(jrbAdd.isSelected()){
-			jtfpid.setEnabled(true);
-			jtfpname.setEnabled(true);
-			jtfprice.setEnabled(true);
-			jtfamount.setEnabled(true);
-			jtfinformation.setEnabled(true);
-			jbSubmit.setEnabled(true);
+		if(jrbtnAdd.isSelected()){
+			jtfPid.setEnabled(true);
+			jtfPname.setEnabled(true);
+			jtfPrice.setEnabled(true);
+			jtfAmount.setEnabled(true);
+			jtfInformation.setEnabled(true);
+			jbtnSubmit.setEnabled(true);
 			
-			display.setText("Enter the information of new product ...\n");
-			display.append("--------------------------------------------------------------------\n");
-			selection = 1;
+			jtaDisplay.setText("Enter the information of new product ...\n");
+			jtaDisplay.append("--------------------------------------------------------------------\n");
+			mSelectedAction = ACTION_ADD;
 		}  
-		if(jrbUpdate.isSelected()){
-			jtfpid.setEnabled(true);
-			jtfpname.setEnabled(false);
-			jtfprice.setEnabled(false);
-			jtfamount.setEnabled(false);
-			jtfinformation.setEnabled(false);
-			jbSubmit.setEnabled(true);
+		
+		if(jrbtnUpdate.isSelected()){
+			jtfPid.setEnabled(true);
+			jtfPname.setEnabled(false);
+			jtfPrice.setEnabled(false);
+			jtfAmount.setEnabled(false);
+			jtfInformation.setEnabled(false);
+			jbtnSubmit.setEnabled(true);
 			
-			display.setText(" Current in stock : \n");
-			display.append("--------------------------------------------------------------------\n");
-			display.append(stock.list());
-			selection = 2;
+			jtaDisplay.setText(" Current in stock : \n");
+			jtaDisplay.append("--------------------------------------------------------------------\n");
+			jtaDisplay.append(stock.list());
+			mSelectedAction = ACTION_UPDATE;
 		}
-		if(jrbDelete.isSelected()){
-			jtfpid.setEnabled(true);
-			jtfpname.setEnabled(false);
-			jtfprice.setEnabled(false);
-			jtfamount.setEnabled(false);
-			jtfinformation.setEnabled(false);
-			jbSubmit.setEnabled(true);
+		
+		if(jrbtnDelete.isSelected()){
+			jtfPid.setEnabled(true);
+			jtfPname.setEnabled(false);
+			jtfPrice.setEnabled(false);
+			jtfAmount.setEnabled(false);
+			jtfInformation.setEnabled(false);
+			jbtnSubmit.setEnabled(true);
 			
-			display.setText(" Enter the PID you want to delete ... \n");
-			display.append("--------------------------------------------------------------------\n");
-			selection = 3;
+			jtaDisplay.setText(" Enter the PID you want to delete ... \n");
+			jtaDisplay.append("--------------------------------------------------------------------\n");
+			mSelectedAction = ACTION_DELETE;
 		}
-		if(jrbShow.isSelected()){
-			jtfpid.setEnabled(false);
-			jtfpname.setEnabled(false);
-			jtfprice.setEnabled(false);
-			jtfamount.setEnabled(false);
-			jtfinformation.setEnabled(false);
-			jbSubmit.setEnabled(false);
+		
+		if(jrbtnShow.isSelected()){
+			jtfPid.setEnabled(false);
+			jtfPname.setEnabled(false);
+			jtfPrice.setEnabled(false);
+			jtfAmount.setEnabled(false);
+			jtfInformation.setEnabled(false);
+			jbtnSubmit.setEnabled(false);
 			
-			display.setText(" Current in stock : \n");
-			display.append("--------------------------------------------------------------------\n");
-			display.append(stock.list());
+			jtaDisplay.setText(" Current in stock : \n");
+			jtaDisplay.append("--------------------------------------------------------------------\n");
+			jtaDisplay.append(stock.list());
 		}
-		if(jrbExit.isSelected()){
-			jtfpid.setEnabled(false);
-			jtfpname.setEnabled(false);
-			jtfprice.setEnabled(false);
-			jtfamount.setEnabled(false);
-			jtfinformation.setEnabled(false);
-			jbSubmit.setEnabled(true);
+		
+		if(jrbtnExit.isSelected()){
+			jtfPid.setEnabled(false);
+			jtfPname.setEnabled(false);
+			jtfPrice.setEnabled(false);
+			jtfAmount.setEnabled(false);
+			jtfInformation.setEnabled(false);
+			jbtnSubmit.setEnabled(true);
 			
-			display.setText(" Will you leave our mall? \n If yes, please press \"Submit\"!");
-			selection = 4;
+			jtaDisplay.setText(" Will you leave our mall? \n If yes, please press \"Submit\"!");
+			mSelectedAction = ACTION_EXIT;
 		}
 		
 		
-		String str = e.getActionCommand();   
-		if(str.equals("Submit")){
-			switch(selection){
-			case 0:
+		final String action = e.getActionCommand();   
+		if("Submit".equals(action)){
+			switch(mSelectedAction){
+			case ACTION_LOGIN_PROCESS:
 				loginProcess();
 				break;
-			case 1:
+			case ACTION_ADD:
 				add();
 				break;
-			case 2:
+			case ACTION_UPDATE:
 				update();
 				break;
-			case 3:
+			case ACTION_DELETE:
 				delete();
 				break;
-			case 4:
+			case ACTION_EXIT:
 				exit();
 				break;
 			}
 		}
 	}
 	private void exit() {
-		// TODO Auto-generated method stub
 		dispose();
 	}
+	
 	private void delete() {
-		// TODO Auto-generated method stub
-		pid = jtfpid.getText();
-		if(!stock.checkItem(pid)){
-			display.append("\n No such item!");
+		mPid = jtfPid.getText().trim();
+		if(!stock.checkItem(mPid)){
+			jtaDisplay.append("\n No such item!");
 			return;
 		}
-		stock.delete(pid);
-		display.append("\nItem# "+pid+ " has been removed!\n");
+		stock.delete(mPid);
+		jtaDisplay.append("\nItem# "+mPid+ " has been removed!\n");
 	}
+	
 	private void update() {
-		// TODO Auto-generated method stub
-		pid = jtfpid.getText();
-		if(!stock.checkItem(pid)){
-			display.append("Wrong PID!");
+		mPid = jtfPid.getText().trim();
+		if(!stock.checkItem(mPid)){
+			jtaDisplay.append("Wrong PID!");
 		}else{
-			jtfpid.setEnabled(false);
-			jtfpname.setEnabled(true);
-			jtfprice.setEnabled(true);
-			jtfamount.setEnabled(true);
-			jtfinformation.setEnabled(true);
-			display.setText("Please udpate new information");
-			pname = jtfpname.getText(); 
-			price = jtfprice.getText().length()==0?-1:Double.parseDouble(jtfprice.getText());
-			amount = jtfamount.getText().length()==0?-1:Integer.parseInt(jtfamount.getText());
-			information = jtfinformation.getText();
-			if(pname ==null || price == -1 || amount == -1 || information ==null) return; 
-			reSetName(pid, pname);
-			reSetPrice(pid, price);
-			reSetAmount(pid, amount);
-			reSetInformation(pid, information);
-			display.append("\n\nitem# "+pid+ " has been updated!\n");
+			jtfPid.setEnabled(false);
+			jtfPname.setEnabled(true);
+			jtfPrice.setEnabled(true);
+			jtfAmount.setEnabled(true);
+			jtfInformation.setEnabled(true);
+			jtaDisplay.setText("Please udpate new information");
+			mPname = jtfPname.getText(); 
+			mPrice = jtfPrice.getText().length()==0?-1:Double.parseDouble(jtfPrice.getText());
+			mAmount = jtfAmount.getText().length()==0?-1:Integer.parseInt(jtfAmount.getText());
+			mInformation = jtfInformation.getText();
+			if(mPname ==null || mPrice == -1 || mAmount == -1 || mInformation ==null) return; 
+			reSetName(mPid, mPname);
+			reSetPrice(mPid, mPrice);
+			reSetAmount(mPid, mAmount);
+			reSetInformation(mPid, mInformation);
+			jtaDisplay.append("\n\nitem# "+mPid+ " has been updated!\n");
 		}
 	}
 	
 	private void add() {
-		// TODO Auto-generated method stub
-		pid = jtfpid.getText();
-		pname = jtfpname.getText(); 
-		price = Double.parseDouble(jtfprice.getText());
-		amount = Integer.parseInt(jtfamount.getText());
-		information = jtfinformation.getText();
-		stock.add(pid, pname, price, amount, information);
-		display.append("\n\nitem# "+pid+ " has been added!\n");
+		mPid = jtfPid.getText().trim();
+		mPname = jtfPname.getText(); 
+		mPrice = Double.parseDouble(jtfPrice.getText());
+		mAmount = Integer.parseInt(jtfAmount.getText());
+		mInformation = jtfInformation.getText();
+		stock.add(mPid, mPname, mPrice, mAmount, mInformation);
+		jtaDisplay.append("\n\nitem# "+mPid+ " has been added!\n");
 	}
+	
 	private void loginProcess(){
-		if(count < 3){
-			user = jtfuser.getText();
-			pwd = jtfpwd.getText();
-			if(user.equals(userName) && pwd.equals(password)){
-				jrbAdd.setEnabled(true);
-				jrbUpdate.setEnabled(true);
-				jrbDelete.setEnabled(true);
-				jrbShow.setEnabled(true);
-				jrbExit.setEnabled(true);
-				jbSubmit.setEnabled(true);
-				display.append("Login successfully!!");
-				jtfuser.setEnabled(false);
-				jtfpwd.setEnabled(false);
+		if(mLoginCount < 3){
+			mManagerName = jtfUser.getText().trim();
+			mManagerPassword = jtfPwd.getText().trim();
+			if(mManagerName.equals(defaultManagerName) && mManagerPassword.equals(defaultManagerPassword)){
+				jrbtnAdd.setEnabled(true);
+				jrbtnUpdate.setEnabled(true);
+				jrbtnDelete.setEnabled(true);
+				jrbtnShow.setEnabled(true);
+				jrbtnExit.setEnabled(true);
+				jbtnSubmit.setEnabled(true);
+				jtaDisplay.append("Login successfully!!");
+				jtfUser.setEnabled(false);
+				jtfPwd.setEnabled(false);
 				
 			}else{
-				display.append("\nError: You still have "+(2-count) +" chances!");
-				count++;
+				jtaDisplay.append("\nError: You still have "+(2-mLoginCount) +" chances!");
+				mLoginCount++;
 			}
 		}else{
-			display.append("You have no permission!");
+			jtaDisplay.append("You have no permission!");
 			dispose();
 		}
 	}
+	
 	public void decrease(String pid, int amount){
 		stock.decrease(pid, amount);
 	}
+	
 	public void increase(String pid, int amount){
 		stock.increase(pid, amount);
 	}
+	
 	public void reSetName(String pid,String newName){
 		stock.reSetName(pid, newName);
 	}
+	
 	public void reSetPrice(String pid,double newPrice){
 		stock.reSetPrice(pid, newPrice);
 	}
+	
 	public void reSetAmount(String pid,int newAmount){
 		stock.reSetAmount(pid, newAmount);
 	}
+	
 	public void reSetInformation(String pid,String newInformation){
 		stock.reSetInformation(pid, newInformation);
 	}
